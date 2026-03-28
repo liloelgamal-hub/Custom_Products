@@ -1,71 +1,70 @@
 ```markdown
 # 🎨 Custom Products – 3D Product Customizer
 
-> منصة تفاعلية لتصميم المنتجات ثلاثية الأبعاد。
+A fully interactive 3D e-commerce platform where users can design their own products – T-shirts, phone cases, mugs, caps, bags, and more – by adding custom text, uploading images, choosing colors, and previewing everything in real-time 3D.
 
 ---
 
-## ✨ المميزات
+## ✨ Features
 
-### 🛍️ واجهة المستخدم
-- **عارض ثلاثي الأبعاد** – تدوير وتكبير وتحريك المنتج بحرية
-- **تخصيص فوري** – إضافة نصوص، رفع صور، تغيير الألوان، مع تحديث مباشر
-- **تحكم كامل بالتصميم** – تحريك النص والصورة، تغيير الحجم، التدوير، القلب (Mirror)، وضع الصورة الكاملة
-- **وضع مظلم / فاتح** – تبديل الوضع وحفظ التفضيل تلقائياً
-- **تصميم متجاوب** – يعمل على جميع الأجهزة (جوال، تابلت، حاسوب)
+### 🛍️ User Experience
+- **3D Product Viewer** – Rotate, zoom, and pan around products in real-time
+- **Live Customization** – Add text, upload images, change colors, with instant updates
+- **Full Design Control** – Position, scale, rotate, and mirror text and images; full-image overlay mode
+- **Dark / Light Mode** – Toggle between themes with saved preference
+- **Responsive Design** – Works on desktop, tablet, and mobile devices
 
-### 🛒 سلة التسوق
-- إضافة منتجات جاهزة أو تصميمات مخصصة ثلاثية الأبعاد
-- تعديل التصميمات المخصصة مباشرة من السلة
-- حذف منتج فردي أو تفريغ السلة بالكامل
-- حفظ البيانات في المتصفح (localStorage)
+### 🛒 Shopping Cart
+- Add standard products or fully custom 3D designs
+- Edit existing custom items directly from the cart
+- Remove single items or clear the entire cart with one click
+- Persistent storage using localStorage
 
-### 📦 الخادم الخلفي
-- عرض المنتجات من ملف JSON
-- حفظ الطلبات ورسائل الاتصال في ملفات JSON
-- واجهة برمجية (API) مع دعم CORS
+### 📦 Backend
+- Serve product data from JSON files
+- Save orders and contact messages to JSON files
+- RESTful API with CORS support
 
-### 🧑‍💻 لوحة التحكم
-- عرض جميع الطلبات المحفوظة
-- قراءة رسائل الاتصال من نموذج التواصل
-- تعمل محلياً دون الحاجة إلى خادم
-
----
-
-## 🛠️ التقنيات المستخدمة
-
-| المستوى          | التقنيات                                                                 |
-|------------------|--------------------------------------------------------------------------|
-| **الواجهة الأمامية** | HTML5, CSS3, JavaScript, TailwindCSS, Three.js, AOS                      |
-| **الخادم الخلفي**    | Node.js, Express, CORS                                                   |
-| **تخزين البيانات**   | JSON files                                                              |
-| **النماذج ثلاثية الأبعاد** | GLTF / GLB                                                           |
-| **النشر**            | Render (backend), Netlify / Vercel (frontend)                           |
+### 🧑‍💻 Admin Panel
+- View all placed orders
+- Read customer messages from the contact form
+- Works locally without a server
 
 ---
 
-## 📁 هيكل المشروع
+## 🛠️ Tech Stack
+
+| Layer          | Technologies                                                                 |
+|----------------|------------------------------------------------------------------------------|
+| **Frontend**   | HTML5, CSS3, JavaScript, TailwindCSS, Three.js, AOS                          |
+| **Backend**    | Node.js, Express, CORS                                                       |
+| **Data Storage** | JSON files                                                                 |
+| **3D Models**  | GLTF / GLB format                                                            |
+
+---
+
+## 📁 Project Structure
 
 ```
 custom-products/
-├── public/                 # ملفات الواجهة الأمامية
+├── public/                 # Frontend files
 │   ├── index.html
 │   ├── about.html
 │   ├── products.html
-│   ├── customize.html      # صفحة التصميم ثلاثي الأبعاد
+│   ├── customize.html      # 3D product customizer
 │   ├── cart.html
 │   ├── checkout.html
 │   ├── contact.html
 │   ├── admin.html
-│   ├── navbar.html         # شريط التنقل (يتم تحميله عبر JavaScript)
+│   ├── navbar.html         # Shared navbar (loaded via JavaScript)
 │   ├── css/
 │   │   └── styles.css
 │   ├── js/
-│   │   ├── main.js         # دوال مشتركة (السلة، الوضع المظلم، تحميل الناف)
-│   │   └── translations.js # دعم اللغتين العربية والإنجليزية
-│   └── images/             # صور المنتجات والشعارات
+│   │   ├── main.js         # Common functions (cart, dark mode, navbar loader)
+│   │   └── translations.js # Bilingual support (Arabic/English)
+│   └── images/             # Product images and logos
 │
-├── server/                 # الخادم الخلفي (Node.js)
+├── server/                 # Backend (Node.js)
 │   ├── server.js
 │   ├── routes/
 │   │   └── api.js
@@ -79,65 +78,71 @@ custom-products/
 
 ---
 
-## 🚦 التشغيل المحلي
+## 🚦 Local Setup
 
-### المتطلبات الأساسية
-- تثبيت Node.js (الإصدار 18 أو أحدث)
-- متصفح حديث
-- محرر أكواد مثل VS Code
+### Prerequisites
+- Node.js (v18 or later)
+- Modern web browser
+- Code editor (VS Code recommended)
 
-### 1. تحميل المشروع
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/custom-products.git
+git clone https://github.com/mar-alaa/custom-products.git
 cd custom-products
 ```
 
-### 2. تشغيل الخادم الخلفي
+### 2. Set Up the Backend
 ```bash
 cd server
 npm install
 npm start
 ```
-الخادم سيعمل على `http://localhost:5000`
+The backend will run on `http://localhost:5000`
 
-### 3. تشغيل الواجهة الأمامية
-افتح مجلد `public` باستخدام أي خادم محلي مثل Live Server في VS Code:
-- انقر بزر الماوس الأيمن على مجلد `public`
-- اختر **Open with Live Server**
+### 3. Run the Frontend
+Open the `public` folder using a local server:
+- Using VS Code Live Server: right-click on the `public` folder and select **Open with Live Server**
+- The site will be available at the displayed URL (e.g., `http://localhost:5500`)
 
-الموقع سيكون متاحاً على الرابط الذي يظهر (مثل `http://localhost:5500`)
-
-**ملاحظة:** في ملفات HTML التي تجلب البيانات من الخادم، تأكد من أن `API_URL` يشير إلى `http://localhost:5000/api/...`
+**Note:** Update the `API_URL` in frontend JavaScript files to point to your backend address (`http://localhost:5000/api`)
 
 ---
 
-## 🧪 إضافة منتجات جديدة
+## 🧪 Adding New Products
 
-1. ضع ملف النموذج ثلاثي الأبعاد (GLTF/GLB) في مجلد `public/models/`
-2. أضف مساره في كائن `modelsMap` داخل `customize.html`:
+1. Place your GLTF/GLB model file in `public/models/`
+2. Add its path to `modelsMap` inside `customize.html`:
    ```javascript
    'product-key': 'models/your-model.glb'
    ```
-3. أضف إعدادات جديدة في `productConfig` (مقياس، موقع، كاميرا)
-4. أضف الخيار إلى القائمة المنسدلة في HTML:
+3. Add configuration to `productConfig` (scale, position, camera settings)
+4. Add the option to the select dropdown in HTML:
    ```html
-   <option value="product-key">اسم المنتج</option>
+   <option value="product-key">Product Name</option>
    ```
 
 ---
-## 🔧 النشر
 
-### الخادم الخلفي (Render)
-1. ارفع مجلد `server` إلى مستودع على GitHub
-2. أنشئ Web Service جديد على Render واربطه بالمستودع
-3. اضبط:
+## 🔧 Deployment
+
+### Backend (Render)
+1. Push the `server` folder to a GitHub repository
+2. Create a new Web Service on Render and connect your repository
+3. Set:
    - **Build Command:** `npm install`
    - **Start Command:** `node server.js`
-4. ستحصل على رابط مثل `https://your-app.onrender.com`
+4. The API will be available at your Render URL
 
-### الواجهة الأمامية (Netlify / Vercel)
-1. ارفع مجلد `public` إلى مستودع GitHub
-2. استورد المشروع إلى Netlify أو Vercel
-3. حدد مجلد النشر `public`
-4. بعد النشر، عدّل جميع `API_URL` في ملفات JavaScript لاستخدام رابط الخادم الخلفي
+### Frontend (Netlify / Vercel)
+1. Push the `public` folder to a GitHub repository
+2. Import the project to Netlify or Vercel
+3. Set the publish directory to `public`
+4. After deployment, update all `API_URL` references to use your backend URL
 
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
