@@ -1,0 +1,328 @@
+<style>
+  /* ====== متغيرات الألوان (تتطابق مع باقي الموقع) ====== */
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --border-color: #e5e7eb;
+    --card-bg: #ffffff;
+    --footer-bg: #f3f4f6;
+    --navbar-bg: rgba(255, 255, 255, 0.85);
+    --navbar-border: rgba(0, 0, 0, 0.1);
+    --neon-color: #3b82f6;
+    --btn-primary: #3b82f6;
+    --btn-primary-hover: #2563eb;
+  }
+
+  html.dark {
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --border-color: #374151;
+    --card-bg: #1f2937;
+    --footer-bg: #111827;
+    --navbar-bg: rgba(17, 24, 39, 0.9);
+    --navbar-border: rgba(59, 130, 246, 0.3);
+    --neon-color: #60a5fa;
+    --btn-primary: #3b82f6;
+    --btn-primary-hover: #60a5fa;
+  }
+
+  /* ====== تنسيق الناف بار الأساسي ====== */
+  .navbar {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .navbar-container {
+    background: var(--navbar-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 60px;
+    padding: 0.8rem 1.8rem;
+    border: 1px solid var(--navbar-border);
+    box-shadow: 0 0 8px var(--neon-color), 0 0 15px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s;
+    position: relative;
+  }
+
+  .navbar-container:hover {
+    box-shadow: 0 0 15px var(--neon-color), 0 0 25px var(--neon-color);
+  }
+
+  /* الحاوية المرنة للأقسام */
+  .navbar-links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  /* الأقسام اليمنى واليسرى */
+  .nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  /* اللوجو في المنتصف */
+  .logo-center {
+    flex-shrink: 0;
+  }
+
+  .logo-img {
+    height: 45px;
+    width: auto;
+    display: block;
+  }
+
+  /* الروابط */
+  .navbar-links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.2s;
+    position: relative;
+    padding-bottom: 4px;
+  }
+
+  /* الخط المتحرك تحت الرابط (تأثير hover) */
+  .navbar-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--btn-primary);
+    transition: width 0.3s ease;
+  }
+
+  .navbar-links a:hover::after {
+    width: 100%;
+  }
+
+  .navbar-links a:hover {
+    color: var(--btn-primary);
+  }
+
+  /* أيقونة السلة والعداد */
+  .cart-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .cart-icon {
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: color 0.2s;
+  }
+
+  .cart-icon:hover {
+    color: var(--btn-primary);
+  }
+
+  .cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background: var(--btn-primary);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+  }
+
+  /* زر الدارك مود */
+  #dark-mode-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-primary);
+    padding: 0;
+    margin-left: 0.5rem;
+  }
+
+  /* ====== إخفاء/إظهار عناصر الموبايل ====== */
+  .mobile-menu-toggle,
+  .mobile-menu {
+    display: none;
+  }
+
+  /* ====== استجابة للشاشات الصغيرة (موبايل) ====== */
+  @media (max-width: 768px) {
+    .navbar-container {
+      width: 95%;
+      padding: 0.6rem 1rem;
+    }
+
+    /* إخفاء الأقسام الجانبية في الوضع العادي */
+    .nav-left, .nav-right {
+      display: none;
+    }
+
+    /* إظهار زر الهمبرغر */
+    .mobile-menu-toggle {
+      display: block;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-primary);
+      position: absolute;
+      left: 1rem;
+      top: 0.6rem;
+      z-index: 10;
+    }
+
+    /* اللوجو يبقى في المنتصف */
+    .logo-center {
+      margin: 0 auto;
+    }
+
+    .logo-img {
+      height: 35px;
+    }
+
+    /* القائمة المنسدلة */
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--navbar-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      margin-top: 0.5rem;
+      padding: 1rem;
+      flex-direction: column;
+      gap: 0.8rem;
+      align-items: center;
+      z-index: 1000;
+      border: 1px solid var(--navbar-border);
+      box-shadow: 0 0 10px var(--neon-color);
+    }
+
+    .mobile-menu.show {
+      display: flex;
+    }
+
+    .mobile-menu a {
+      width: 100%;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .mobile-cart {
+      width: 100%;
+      text-align: center;
+    }
+
+    .mobile-cart .cart-icon {
+      display: inline-flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .mobile-dark-toggle {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-primary);
+      padding: 0.5rem;
+    }
+
+    .mobile-menu .cart-badge {
+      position: relative;
+      top: -2px;
+      right: 0;
+      margin-left: 0.3rem;
+    }
+  }
+/* القائمة المنسدلة (مخفية افتراضياً) */
+.mobile-menu {
+                   /* أو flex, لكن نتحكم بالرؤية عبر opacity */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px) scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+    /* إعدادات أخرى (position, background, إلخ) */
+}
+
+/* عند الفتح */
+.mobile-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0s;
+}
+
+</style>
+
+<div class="navbar center">
+  <div class="navbar-container">
+    <div class="navbar-links">
+      <!-- زر الهمبرغر (يظهر فقط على الموبايل) -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="القائمة">☰</button>
+
+      <!-- القسم الأيسر (شاشات كبيرة) -->
+      <div class="nav-left">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+      </div>
+
+      <!-- اللوجو في المنتصف -->
+      <div class="logo-center">
+        <img src="images/logo.png" alt="Logo" class="logo-img">
+      </div>
+
+      <!-- القسم الأيمن (شاشات كبيرة) -->
+      <div class="nav-right">
+        <a href="products.html">Products</a>
+        <a href="contact.html">Contact</a>
+        <button id="lang-toggle" class="lang-btn">🇬🇧 English</button>
+        <div class="cart-wrapper">
+          <a href="cart.html" class="cart-icon">
+            🛒
+            <span id="cart-count" class="cart-badge">0</span>
+          </a>
+        </div>
+        <button id="dark-mode-toggle">🌙</button>
+      </div>
+
+      <!-- القائمة المنسدلة للموبايل -->
+      <div class="mobile-menu" id="mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="products.html">Products</a>
+        <a href="contact.html">Contact</a>
+        <div class="cart-wrapper mobile-cart">
+          <a href="cart.html" class="cart-icon">
+            🛒
+            <span id="cart-count-mobile" class="cart-badge">0</span>
+          </a>
+        </div>
+        <button id="dark-mode-toggle-mobile" class="mobile-dark-toggle">🌙</button>
+      </div>
+    </div>
+  </div>
+</div>

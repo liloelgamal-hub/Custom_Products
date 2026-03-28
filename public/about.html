@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عن الموقع - Custom Products</title>
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- ملف CSS الرئيسي -->
+    <link rel="stylesheet" href="/public/css/style.css">
+    <style>
+        /* تنسيقات إضافية خاصة بالصفحة */
+        .story-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin: 3rem 0;
+        }
+        .story-image img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .value-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .timeline {
+            position: relative;
+            padding: 1rem 0;
+            margin: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: var(--btn-primary);
+        }
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+        .timeline-date {
+            width: 45%;
+            text-align: right;
+            font-weight: bold;
+            color: var(--btn-primary);
+        }
+        .timeline-content {
+            width: 45%;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .team-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+        .team-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .team-info {
+            padding: 1rem;
+        }
+        .team-name {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+        .team-role {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .story-section {
+                grid-template-columns: 1fr;
+            }
+            .timeline::before {
+                left: 20px;
+            }
+            .timeline-item,
+            .timeline-item:nth-child(odd) {
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 1rem;
+            }
+            .timeline-date {
+                width: auto;
+                text-align: left;
+            }
+            .timeline-content {
+                width: auto;
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- الناف ستضاف تلقائياً عبر main.js -->
+
+    <div class="main-content">
+        <div class="container">
+            <!-- القسم العلوي (هيرو صغير) -->
+            <div class="hero" style="background: linear-gradient(135deg, var(--btn-primary), #8b5cf6); padding: 3rem 2rem; border-radius: 1rem; margin-bottom: 3rem;" data-aos="fade-up">
+                <h1 style="color: white;">Custom Products</h1>
+                <p style="color: rgba(255,255,255,0.9); max-width: 600px; margin: 1rem auto 0;">نحن هنا لتحويل أفكارك إلى منتجات حقيقية. منذ البداية ونحن نؤمن بأن الإبداع يجب أن يكون في متناول الجميع.</p>
+            </div>
+
+            <!-- قصة الموقع -->
+            <div class="story-section" data-aos="fade-right">
+                <div class="story-text">
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 1rem;">قصتنا</h2>
+                    <p style="margin-bottom: 1rem;">انطلقنا عام 2023 بفكرة بسيطة: منح الناس حرية تصميم منتجاتهم بأنفسهم. من تي شيرت بسيط إلى جراب جوال مميز، نؤمن أن كل قطعة يمكن أن تعكس شخصية صاحبها.</p>
+                    <p style="margin-bottom: 1rem;">ما بدأ كحلم صغير أصبح اليوم منصة متكاملة تضم آلاف المستخدمين حول العالم. نعمل مع أفضل المصنعين لضمان جودة عالية، ونهتم بأدق التفاصيل لنقدم لك تجربة فريدة.</p>
+                    <p>نحن لا نصنع منتجات فقط، بل نساعدك في سرد قصتك من خلال تصميماتك الخاصة.</p>
+                </div>
+                
+            </div>
+
+            <!-- القيم -->
+            <h2 class="section-title" data-aos="fade-up">قيمنا</h2>
+            <div class="values-grid">
+                <div class="value-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="value-icon">✨</div>
+                    <h3>الإبداع</h3>
+                    <p style="color: var(--text-secondary);">نشجع كل فكرة جديدة ونساعدك في إخراجها إلى الواقع.</p>
+                </div>
+                <div class="value-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="value-icon">🔧</div>
+                    <h3>الجودة</h3>
+                    <p style="color: var(--text-secondary);">نستخدم أفضل المواد لضمان منتج يدوم طويلاً.</p>
+                </div>
+                <div class="value-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="value-icon">🤝</div>
+                    <h3>الثقة</h3>
+                    <p style="color: var(--text-secondary);">خدمة عملاء متميزة وشفافية في كل خطوة.</p>
+                </div>
+                <div class="value-card" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="value-icon">🌍</div>
+                    <h3>الاستدامة</h3>
+                    <p style="color: var(--text-secondary);">نتبنى ممارسات صديقة للبيئة في إنتاجنا.</p>
+                </div>
+            </div>
+
+            <!-- رحلة التطور (تاييملاين) -->
+            <h2 class="section-title" data-aos="fade-up">رحلة التطور</h2>
+            <div class="timeline" data-aos="fade-up">
+                <div class="timeline-item">
+                    <div class="timeline-date">2023</div>
+                    <div class="timeline-content">
+                        <h3>الانطلاقة</h3>
+                        <p>تأسيس المنصة بأربعة منتجات أساسية وخدمة التصميم المخصص.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2024</div>
+                    <div class="timeline-content">
+                        <h3>التوسع</h3>
+                        <p>إضافة 12 منتجاً جديداً ودخول أسواق جديدة في الشرق الأوسط وأوروبا.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025</div>
+                    <div class="timeline-content">
+                        <h3>الابتكار</h3>
+                        <p>إطلاق تقنية المعاينة ثلاثية الأبعاد وتطبيق الهواتف الذكية.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">المستقبل</div>
+                    <div class="timeline-content">
+                        <h3>رؤية 2030</h3>
+                        <p>الوصول إلى مليون مستخدم وتوسيع نطاق المنتجات لتشمل الأثاث والإكسسوارات المنزلية.</p>
+                    </div>
+                </div>
+            </div>
+
+          
+
+            <!-- دعوة للتواصل -->
+            <div style="text-align: center; margin: 4rem 0 2rem;" data-aos="fade-up">
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">لديك فكرة؟ نريد أن نسمعها!</p>
+                <a href="contact.html" class="btn-primary" style="display: inline-block; padding: 0.8rem 2rem; text-decoration: none;">تواصل معنا</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>© 2025 Custom Products. جميع الحقوق محفوظة.</span>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/public/js/translations.js"></script>
+    <script src="/public/js/main.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 100 });
+    </script>
+</body>
+</html>

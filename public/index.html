@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Products | الرئيسية</title>
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- ملف CSS الرئيسي -->
+    <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+    <!-- هنا سيتم إدراج الناف بار تلقائياً بواسطة JavaScript -->
+    
+    <div class="main-content">
+        <div class="hero" data-aos="fade-up" data-aos-duration="1000">
+            <div class="container">
+                <h1 data-aos="zoom-in" data-aos-delay="200"                                      data-i18n="hero_title">صمم منتجك الخاص</h1>
+                <a href="customize.html" class="btn" data-aos="flip-up" data-aos-delay="600"     data-i18n="hero_btn">ابدأ التصميم</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-right">منتجات مميزة</h2>
+            <div class="products-grid" id="featured-products"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>© 2025 Custom Products. جميع الحقوق محفوظة.</span>
+        </div>
+    </footer>
+
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- ملف JS الرئيسي -->
+    <script src="/public/js/translations.js"></script>
+    <script src="/public/js/main.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 100 });
+
+        // تحميل المنتجات المميزة (نفس الكود السابق)
+        async function loadFeaturedProducts() {
+            const API_URL = 'http://localhost:5000/api/products';
+            try {
+                const response = await fetch(API_URL);
+                const products = await response.json();
+                const featured = products.slice(0, 3);
+                const container = document.getElementById('featured-products');
+                container.innerHTML = featured.map((p, idx) => `
+                    <div class="product-card" data-aos="fade-up" data-aos-delay="${idx * 100}">
+                        <img src="${p.image}" alt="${p.name}">
+                        <div class="product-card-body">
+                            <h3 class="product-title">${p.name}</h3>
+                            <p class="product-description">${p.description}</p>
+                            <p class="product-price">$${p.price}</p>
+                            <button class="btn-primary add-to-cart" 
+                                data-id="${p.id}" 
+                                data-name="${p.name}" 
+                                data-price="${p.price}" 
+                                data-image="${p.image}">
+                                أضف إلى السلة
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                AOS.refresh();
+                document.querySelectorAll('.add-to-cart').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        addToCart({
+                            id: btn.dataset.id,
+                            name: btn.dataset.name,
+                            price: parseFloat(btn.dataset.price),
+                            image: btn.dataset.image,
+                            type: 'standard',
+                            quantity: 1
+                        });
+                    });
+                });
+            } catch (error) {
+                console.error('خطأ في تحميل المنتجات:', error);
+                document.getElementById('featured-products').innerHTML = '<p style="text-align:center; color: var(--text-secondary);">حدث خطأ في تحميل المنتجات.</p>';
+            }
+        }
+
+        // انتظر حتى يتم تحميل الناف ثم نبدأ الباقي
+        document.addEventListener('DOMContentLoaded', () => {
+            // loadNavbar سيتم استدعاؤها من main.js
+            // نستخدم setTimeout للتأكد من أن الناف قد تحمَّل (أو نستمع لحدث مخصص)
+            setTimeout(() => {
+                loadFeaturedProducts();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

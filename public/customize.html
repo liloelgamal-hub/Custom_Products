@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>تخصيص المنتج ثلاثي الأبعاد - Custom Products</title>
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- ملف CSS الرئيسي -->
+    <link rel="stylesheet" href="/public/css/style.css">
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+    <style>
+    :root {
+        --bg-primary: #0a0a0a;
+        --card-bg: rgba(20, 20, 30, 0.7);
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0a0;
+        --border-color: #2a2a3a;
+        --btn-primary: #3b82f6;
+        --btn-primary-hover: #2563eb;
+        --accent: #8b5cf6;
+        --neon-color: #3b82f6;
+    }
+    body {
+        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        color: var(--text-primary);
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .main-content {
+        margin-top: 100px;
+        padding: 20px;
+    }
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .section-title {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #fff, var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    #canvas-container {
+        width: 100%;
+        height: 550px;
+        background: #111;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .controls-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 1.8rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+    }
+    input, select {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        background: rgba(0,0,0,0.4);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        color: white;
+        transition: all 0.2s;
+    }
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(139,92,246,0.2);
+    }
+    input[type="color"] {
+        height: 45px;
+        padding: 0.2rem;
+        cursor: pointer;
+    }
+    input[type="range"] {
+        padding: 0;
+        background: var(--border-color);
+    }
+    input[type="range"]:focus {
+        outline: none;
+    }
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .checkbox-group input {
+        width: auto;
+        margin-right: 0.3rem;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--btn-primary), var(--accent));
+        color: white;
+        border: none;
+        padding: 0.9rem;
+        border-radius: 40px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+    }
+    .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .texture-preview {
+        background: rgba(0,0,0,0.4);
+        border-radius: 16px;
+        padding: 0.5rem;
+        text-align: center;
+        border: 1px dashed var(--border-color);
+    }
+    .texture-preview canvas {
+        border-radius: 12px;
+        background: #fff;
+    }
+    @media (max-width: 768px) {
+        .main-content { margin-top: 90px; }
+        #canvas-container { height: 400px; }
+        .controls-card { padding: 1.2rem; }
+    }
+</style>
+</head>
+<body>
+    <!-- الناف بار ستحمل عبر main.js -->
+    <div class="main-content">
+        <div class="container">
+            <h1 class="section-title" data-aos="fade-up">
+                <i class="fas fa-cube"></i> تخصيص ثلاثي الأبعاد
+            </h1>
+            <div id="canvas-container" data-aos="fade-up"></div>
+            <div class="controls-card" data-aos="fade-up">
+                <div class="row">
+    <div class="form-group">
+        <label><i class="fas fa-expand-alt"></i> حجم الصورة (%)</label>
+        <input type="range" id="image-scale" min="10" max="200" value="100" step="5">
+    </div>
+</div>
+<div class="row">
+    <div class="form-group">
+        <label><i class="fas fa-text-height"></i> حجم النص (px)</label>
+        <input type="range" id="text-font-size" min="20" max="200" value="80" step="5">
+    </div>
+</div>
+                <div class="row">
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> نوع المنتج</label>
+                        <select id="product-type">
+                            <option value="T-shirt" data-model="models/T Shirt.glb">T Shirt</option>
+                            <option value="phone-case" data-model="models/Gymmat.glb">Phone Case</option>
+                            <option value="mug" data-model="models/Coffee Mug.glb">Coffee Mug</option>
+                            <option value="pillow" data-model="models/Pillow.glb">Pillow</option>
+                            <option value="plate" data-model="models/Plate.glb">plate</option>
+                            <option value="cap" data-model="models/Cap.glb">Cap</option>
+                            <option value="mousepad" data-model="models/Mousepad.glb">Mousepad</option>
+                            <option value="water-bottle" data-model="models/Water bottle.glb">Water bottle</option>
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-palette"></i> لون المنتج</label>
+                        <input type="color" id="product-color" value="#3b82f6">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-font"></i> النص (حتى 20 حرفاً)</label>
+                        <input type="text" id="custom-text" maxlength="20" placeholder="أدخل نصك">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> صورة (اختياري)</label>
+                        <input type="file" id="upload-image" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label><i class="fas fa-arrows-alt-h"></i> موقع الصورة (أفقي)</label>
+                        <input type="range" id="image-x" min="0" max="100" value="50" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-arrows-alt-v"></i> موقع الصورة (عمودي)</label>
+                        <input type="range" id="image-y" min="0" max="100" value="50" step="1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label><i class="fas fa-arrows-alt-h"></i> موقع النص (أفقي)</label>
+                        <input type="range" id="text-x" min="0" max="100" value="50" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-arrows-alt-v"></i> موقع النص (عمودي)</label>
+                        <input type="range" id="text-y" min="0" max="100" value="50" step="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+    <label><i class="fas fa-sync-alt"></i> تدوير النص والصورة (درجة)</label>
+    <input type="range" id="texture-rotation" min="0" max="360" value="0" step="1">
+</div>
+                <div class="row">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="full-image">
+                        <label for="full-image" style="display: inline;">صورة كاملة على التي شيرت</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="mirror-texture">
+                        <label for="mirror-texture" style="display: inline;">قلب النسيج كاملاً (أفقي)</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="mirror-texture-v">
+                        <label for="mirror-texture-v" style="display: inline;">قلب النسيج عمودياً</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="mirror-text-h">
+                        <label for="mirror-text-h" style="display: inline;">قلب النص أفقياً</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="mirror-text-v">
+                        <label for="mirror-text-v" style="display: inline;">قلب النص عمودياً</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>معاينة النسيج</label>
+                        <div class="texture-preview" id="texture-preview"></div>
+                    </div>
+                </div>
+                <button id="add-custom-cart" class="btn-primary">
+                    <i class="fas fa-cart-plus"></i> أضف إلى السلة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>© 2025 Custom Products. جميع الحقوق محفوظة.</span>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/public/js/translations.js"></script>
+    <script src="/public/js/main.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+AOS.init({ once: true, offset: 100 });
+
+// ====== عناصر التحكم ======
+const colorPicker = document.getElementById('product-color');
+const textInput = document.getElementById('custom-text');
+const imageInput = document.getElementById('upload-image');
+const imageX = document.getElementById('image-x');
+const imageY = document.getElementById('image-y');
+const textX = document.getElementById('text-x');
+const textY = document.getElementById('text-y');
+const fullImageCheckbox = document.getElementById('full-image');
+const mirrorTextureCheckbox = document.getElementById('mirror-texture');
+const mirrorTextHCheckbox = document.getElementById('mirror-text-h');
+const mirrorTextVCheckbox = document.getElementById('mirror-text-v');
+const addBtn = document.getElementById('add-custom-cart');
+const previewContainer = document.getElementById('texture-preview');
+const productTypeSelect = document.getElementById('product-type');
+const imageScale = document.getElementById('image-scale');
+const fontSizeSlider = document.getElementById('text-font-size');
+const mirrorTextureVCheckbox = document.getElementById('mirror-texture-v');
+const rotationSlider = document.getElementById('texture-rotation');
+
+// ====== معاملات الرابط ======
+const urlParams = new URLSearchParams(window.location.search);
+const preSelectedProduct = urlParams.get('product');
+const editIndex = urlParams.get('edit');
+let isEditing = editIndex !== null;
+let editCartIndex = isEditing ? parseInt(editIndex) : -1;
+let storedBase64Image = null;
+
+// ====== إعدادات النماذج ======
+const modelsMap = {
+    'T-shirt': 'models/T Shirt.glb',
+    'phone-case': 'models/Gymmat.glb',
+    'mug': 'models/Coffee Mug.glb',
+    'pillow': 'models/Pillow.glb',
+    'plate': 'models/Plate.glb',
+    'cap': 'models/Cap.glb',
+    'mousepad': 'models/Mousepad.glb',
+    'water-bottle': 'models/Water bottle.glb'
+};
+let model = null;
+let mainMaterial = null;
+let materialForTexture = null;
+let currentTexture = null;
+
+// ====== المشهد ======
+let scene, camera, renderer, controls;
+const container = document.getElementById('canvas-container');
+scene = new THREE.Scene();
+scene.background = new THREE.Color(0x111111);
+scene.environment = new THREE.Color(0x222222);
+
+camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+camera.position.set(1.5, 1.2, 1.8);
+renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true;
+container.appendChild(renderer.domElement);
+
+controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.autoRotate = false;
+controls.enableZoom = true;
+controls.enablePan = true;
+controls.zoomSpeed = 1.2;
+controls.target.set(0, 0.2, 0);
+
+// ====== إضاءة ======
+const ambientLight = new THREE.AmbientLight(0x404060);
+scene.add(ambientLight);
+const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+mainLight.position.set(2, 2, 2);
+scene.add(mainLight);
+const fillLight = new THREE.DirectionalLight(0xcc99ff, 0.5);
+fillLight.position.set(-1, 1, -1);
+scene.add(fillLight);
+const backLight = new THREE.PointLight(0x4466cc, 0.3);
+backLight.position.set(0, 1, -1.5);
+scene.add(backLight);
+// شبكة المساعدة تم إزالتها (حذف السطر الذي يضيف gridHelper)
+
+const productConfig = {
+    'T-shirt': {
+        scale: 1, posY: -0.2,
+        cameraPos: { x: 0.5, y: 0.5, z: .6 },
+        targetY: .5,
+        materialKeywords: ['body', 'shirt', 'cloth', 't-shirt']
+    },
+    'phone-case': {
+        scale: 1.2, posY: -0.1,
+        cameraPos: { x: 1.2, y: 1, z: 1 },  // أقرب وأخفض
+        targetY: -0.4,
+        materialKeywords: ['body', 'case', 'back', 'cover', 'phone', 'iphone'],
+        useFirstMaterial: true
+    },
+    'mug': {
+        scale: 0.9, posY: -0.2,
+        cameraPos: { x: 1.0, y: 0.9, z: 26 },  // أقرب للكوب
+        targetY: 0.1,
+        materialKeywords: ['body', 'mug', 'cup', 'ceramic']
+    },
+    'pillow': {
+        scale: 0.8, posY: -0.3,
+        cameraPos: { x: 1.3, y: 2, z: 4.5 },
+        targetY: 0,
+        materialKeywords: ['body', 'pillow', 'fabric', 'canvas'],
+        useFirstMaterial: true
+    },
+    'plate': {
+        scale: 0.7, posY: -0.3,
+        cameraPos: { x: 1.2, y: 0.6, z: 220 },
+        targetY: 0,
+        materialKeywords: ['body', 'plate', 'ceramic'],
+        useFirstMaterial: true
+    },
+    'cap': {
+        scale: 0.8, posY: -0.2,
+        cameraPos: { x: 5, y: 40, z: 60 },
+        targetY: 5,
+        materialKeywords: ['body', 'cap', 'fabric', 'canvas'],
+        useFirstMaterial: true
+    },
+    'mousepad': {
+        scale: 0.9, posY: -0.1,
+        cameraPos: { x: 1.0, y: 2, z: 2 },  // منخفض ومائل
+        targetY: -0.3,
+        materialKeywords: ['body', 'mousepad', 'fabric', 'surface'],
+        useFirstMaterial: true
+    },
+    'water-bottle': {
+        scale: 0.7, posY: -0.3,
+        cameraPos: { x: 50, y: 30, z: 20 },
+        targetY: 0.2,
+        materialKeywords: ['body', 'bottle', 'plastic', 'water'],
+        useFirstMaterial: true
+    }
+};
+
+// ====== تحميل النموذج مع مؤشر تحميل ======
+const loader = new GLTFLoader();
+function loadModel(modelUrl, productType, showLoader = true) {
+    if (model) scene.remove(model);
+    if (showLoader) {
+        container.style.opacity = '0.5';
+        container.style.transition = 'opacity 0.2s';
+    }
+    loader.load(modelUrl, (gltf) => {
+        model = gltf.scene;
+        scene.add(model);
+        const config = productConfig[productType] || productConfig['T-shirt'];
+        model.scale.set(config.scale, config.scale, config.scale);
+        model.position.y = config.posY;
+
+        // البحث عن المادة
+        const materials = [];
+        model.traverse((child) => {
+            if (child.isMesh && child.material) {
+                materials.push({ mesh: child, material: child.material, name: child.name.toLowerCase() });
+            }
+        });
+        let foundMaterial = false;
+        if (config.useFirstMaterial && materials.length > 0) {
+            mainMaterial = materials[0].material;
+            materialForTexture = materials[0].material;
+            foundMaterial = true;
+        } else {
+            for (let mat of materials) {
+                const matched = config.materialKeywords.some(keyword => mat.name.includes(keyword));
+                if (matched) {
+                    mainMaterial = mat.material;
+                    materialForTexture = mat.material;
+                    foundMaterial = true;
+                    break;
+                }
+            }
+            if (!foundMaterial && materials.length > 0) {
+                mainMaterial = materials[0].material;
+                materialForTexture = materials[0].material;
+            }
+        }
+
+        if (mainMaterial) {
+            mainMaterial.color.setHex(parseInt(colorPicker.value.slice(1), 16));
+            if (materialForTexture) materialForTexture.side = THREE.DoubleSide;
+            if (currentTexture) applyTexture(currentTexture);
+        }
+
+        camera.position.set(config.cameraPos.x, config.cameraPos.y, config.cameraPos.z);
+        controls.target.set(0, config.targetY, 0);
+        controls.update();
+        if (showLoader) {
+            container.style.opacity = '1';
+        }
+    }, undefined, (error) => {
+        console.error('Model load error:', error);
+        container.style.opacity = '1';
+        container.innerHTML = '<div style="text-align:center; padding:2rem; color:red;">Failed to load model. Check file path.</div>';
+    });
+}
+
+// ====== تحديد المنتج الأولي ======
+let initialProductType = 'T-shirt';
+if (preSelectedProduct && modelsMap[preSelectedProduct]) {
+    initialProductType = preSelectedProduct;
+} else if (editIndex !== null) {
+    // في حالة التعديل، سنقرأ نوع المنتج من البيانات لاحقاً
+    initialProductType = 'T-shirt';
+}
+productTypeSelect.value = initialProductType;
+loadModel(modelsMap[initialProductType], initialProductType);
+
+// ====== تبديل المنتج ======
+productTypeSelect.addEventListener('change', () => {
+    const val = productTypeSelect.value;
+    loadModel(modelsMap[val], val);
+});
+
+// ====== لون المنتج ======
+colorPicker.addEventListener('input', (e) => {
+    if (mainMaterial) mainMaterial.color.set(e.target.value);
+});
+
+// ====== دوال النسيج ======
+function applyTexture(texture) {
+    if (materialForTexture) {
+        if (materialForTexture.map) materialForTexture.map.dispose();
+        materialForTexture.map = texture;
+        materialForTexture.needsUpdate = true;
+        currentTexture = texture;
+    }
+}
+
+function createTexture(text, imageFile, imgX, imgY, imgScale, txtX, txtY, fontSize, fullImage, mirrorTex, mirrorTexV, mirrorTextH, mirrorTextV, rotationAngle, callback) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 2048;
+    canvas.height = 2048;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(rotationAngle * Math.PI / 180);
+    ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+    if (fullImage && imageFile) {
+        const img = new Image();
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            drawTextAndFinalize();
+        };
+        img.src = URL.createObjectURL(imageFile);
+        return;
+    }
+
+    if (imageFile) {
+        const img = new Image();
+        img.onload = () => {
+            const factor = imgScale / 100;
+            const w = img.width * factor;
+            const h = img.height * factor;
+            const x = (canvas.width - w) * (imgX / 100);
+            const y = (canvas.height - h) * (imgY / 100);
+            ctx.drawImage(img, x, y, w, h);
+            drawTextAndFinalize();
+        };
+        img.src = URL.createObjectURL(imageFile);
+    } else {
+        drawTextAndFinalize();
+    }
+
+    function drawTextAndFinalize() {
+        if (text) {
+            ctx.font = `Bold ${fontSize * 2}px Arial`;
+            ctx.fillStyle = '#000000';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const textXpos = canvas.width * (txtX / 100);
+            const textYpos = canvas.height * (txtY / 100);
+            ctx.fillText(text, textXpos, textYpos);
+        }
+        ctx.restore();
+        finalizeTexture(canvas, mirrorTex, mirrorTexV, callback);
+    }
+}
+
+function finalizeTexture(canvas, mirrorH, mirrorV, callback) {
+    let final = canvas;
+    if (mirrorH) {
+        const mirrored = document.createElement('canvas');
+        mirrored.width = canvas.width;
+        mirrored.height = canvas.height;
+        const mCtx = mirrored.getContext('2d');
+        mCtx.translate(canvas.width, 0);
+        mCtx.scale(-1, 1);
+        mCtx.drawImage(canvas, 0, 0);
+        final = mirrored;
+    }
+    if (mirrorV) {
+        const mirrored = document.createElement('canvas');
+        mirrored.width = final.width;
+        mirrored.height = final.height;
+        const mCtx = mirrored.getContext('2d');
+        mCtx.translate(0, final.height);
+        mCtx.scale(1, -1);
+        mCtx.drawImage(final, 0, 0);
+        final = mirrored;
+    }
+    const texture = new THREE.CanvasTexture(final);
+    texture.anisotropy = 16;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.needsUpdate = true;
+
+    previewContainer.innerHTML = '';
+    const previewCanvas = document.createElement('canvas');
+    previewCanvas.width = 200;
+    previewCanvas.height = 200;
+    const pCtx = previewCanvas.getContext('2d');
+    pCtx.drawImage(final, 0, 0, 200, 200);
+    previewContainer.appendChild(previewCanvas);
+
+    callback(texture);
+}
+
+function updateTexture() {
+    const text = textInput.value;
+    let file = imageInput.files[0];
+    if (!file && storedBase64Image) {
+        fetch(storedBase64Image)
+            .then(res => res.blob())
+            .then(blob => {
+                file = new File([blob], 'custom.png', { type: 'image/png' });
+                continueUpdate(file);
+            });
+        return;
+    }
+    continueUpdate(file);
+
+    function continueUpdate(file) {
+        const imgX = parseFloat(imageX.value);
+        const imgY = parseFloat(imageY.value);
+        const imgScale = parseFloat(imageScale.value);
+        const txtX = parseFloat(textX.value);
+        const txtY = parseFloat(textY.value);
+        const fontSize = parseFloat(fontSizeSlider.value);
+        const fullImage = fullImageCheckbox.checked;
+        const mirrorTexture = mirrorTextureCheckbox.checked;
+        const mirrorTextureV = mirrorTextureVCheckbox.checked;
+        const mirrorTextH = mirrorTextHCheckbox.checked;
+        const mirrorTextV = mirrorTextVCheckbox.checked;
+        const rotation = parseFloat(rotationSlider.value);
+
+        createTexture(
+            text, file, imgX, imgY, imgScale, txtX, txtY, fontSize,
+            fullImage, mirrorTexture, mirrorTextureV, mirrorTextH, mirrorTextV, rotation,
+            (texture) => { applyTexture(texture); }
+        );
+    }
+}
+
+// ====== ربط الأحداث ======
+textInput.addEventListener('input', updateTexture);
+fontSizeSlider.addEventListener('input', updateTexture);
+imageInput.addEventListener('change', updateTexture);
+imageX.addEventListener('input', updateTexture);
+imageY.addEventListener('input', updateTexture);
+imageScale.addEventListener('input', updateTexture);
+textX.addEventListener('input', updateTexture);
+textY.addEventListener('input', updateTexture);
+fullImageCheckbox.addEventListener('change', updateTexture);
+mirrorTextureCheckbox.addEventListener('change', updateTexture);
+mirrorTextureVCheckbox.addEventListener('change', updateTexture);
+mirrorTextHCheckbox.addEventListener('change', updateTexture);
+mirrorTextVCheckbox.addEventListener('change', updateTexture);
+rotationSlider.addEventListener('input', updateTexture);
+
+// ====== وظيفة تحميل بيانات التعديل ======
+function loadCustomDataFromCart(customData) {
+    const productType = customData.productType;
+    const option = Array.from(productTypeSelect.options).find(opt => opt.value === productType);
+    if (option) option.selected = true;
+    // تغيير المنتج أولاً
+    productTypeSelect.dispatchEvent(new Event('change'));
+    // بعد ثانية، ضبط باقي القيم
+    setTimeout(() => {
+        textInput.value = customData.text || '';
+        colorPicker.value = customData.color || '#3b82f6';
+        imageX.value = customData.imgX || 50;
+        imageY.value = customData.imgY || 50;
+        textX.value = customData.txtX || 50;
+        textY.value = customData.txtY || 50;
+        imageScale.value = customData.imgScale || 100;
+        fontSizeSlider.value = customData.fontSize || 80;
+        rotationSlider.value = customData.rotation || 0;
+        fullImageCheckbox.checked = customData.fullImage || false;
+        mirrorTextureCheckbox.checked = customData.mirrorTexture || false;
+        mirrorTextureVCheckbox.checked = customData.mirrorTextureV || false;
+        mirrorTextHCheckbox.checked = customData.mirrorTextH || false;
+        mirrorTextVCheckbox.checked = customData.mirrorTextV || false;
+        if (customData.imageFile && customData.imageFile !== 'uploaded') {
+            storedBase64Image = customData.imageFile;
+        }
+        updateTexture();
+    }, 500);
+}
+
+if (isEditing) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (cart[editCartIndex] && cart[editCartIndex].type === 'custom-3d') {
+        const customData = cart[editCartIndex].customData;
+        if (customData) loadCustomDataFromCart(customData);
+    }
+}
+
+// ====== إضافة المنتج للسلة ======
+addBtn.addEventListener('click', () => {
+    if (!model) {
+        alert('Model not loaded yet. Please try again.');
+        return;
+    }
+
+    const customData = {
+        productType: productTypeSelect.value,
+        color: colorPicker.value,
+        text: textInput.value,
+        fontSize: fontSizeSlider.value,
+        imgX: imageX.value,
+        imgY: imageY.value,
+        imgScale: imageScale.value,
+        txtX: textX.value,
+        txtY: textY.value,
+        fullImage: fullImageCheckbox.checked,
+        mirrorTexture: mirrorTextureCheckbox.checked,
+        mirrorTextureV: mirrorTextureVCheckbox.checked,
+        mirrorTextH: mirrorTextHCheckbox.checked,
+        mirrorTextV: mirrorTextVCheckbox.checked,
+        rotation: rotationSlider.value,
+    };
+
+    const handleSave = (imageBase64) => {
+        if (imageBase64) customData.imageFile = imageBase64;
+
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const selectedType = productTypeSelect.options[productTypeSelect.selectedIndex].text;
+        const newItem = {
+            id: isEditing ? cart[editCartIndex].id : 'custom_3d_' + Date.now(),
+            name: `${selectedType} Custom 3D`,
+            price: 29.99,
+            image: '',
+            type: 'custom-3d',
+            quantity: 1,
+            customData: customData
+        };
+
+        if (isEditing) {
+            cart[editCartIndex] = newItem;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Product updated in cart!');
+            window.location.href = 'cart.html';
+        } else {
+            cart.push(newItem);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Added to cart!');
+            window.location.href = 'cart.html';
+        }
+    };
+
+    if (imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => handleSave(e.target.result);
+        reader.readAsDataURL(imageInput.files[0]);
+    } else if (storedBase64Image) {
+        handleSave(storedBase64Image);
+    } else {
+        handleSave(null);
+    }
+});
+
+// ====== حلقة العرض ======
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+    const w = container.clientWidth, h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+});
+
+// تحديث أولي للنسيج
+updateTexture();
+
+// تعطيل شرائح الصورة عند تفعيل الصورة الكاملة
+function updatePositionSlidersState() {
+    const disabled = fullImageCheckbox.checked;
+    imageX.disabled = disabled;
+    imageY.disabled = disabled;
+}
+fullImageCheckbox.addEventListener('change', updatePositionSlidersState);
+updatePositionSlidersState();
+</script>
+</body>
+</html>

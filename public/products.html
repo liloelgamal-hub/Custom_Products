@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جميع المنتجات - Custom Products</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> <!-- إزالة /public -->
+</head>
+<body>
+    <div class="main-content">
+        <div class="container">
+            <h1 class="section-title" data-aos="fade-up">جميع المنتجات</h1>
+            <div class="products-grid" id="all-products-list" style="margin-top: 2rem;">
+                <p style="text-align:center; color: var(--text-secondary);">جاري التحميل...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>© 2025 Custom Products. جميع الحقوق محفوظة.</span>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/translations.js"></script> <!-- إزالة /public -->
+    <script src="js/main.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 100 });
+
+        async function loadAllProducts() {
+    const API_URL = 'http://localhost:5000/api/products';
+    try {
+        const response = await fetch(API_URL);
+        const products = await response.json();
+        const container = document.getElementById('all-products-list');
+        container.innerHTML = products.map(p => {
+            // تحويل type من JSON إلى المفتاح المستخدم في القائمة المنسدلة للتصميم
+            let typeKey = '';
+            
+            if (p.type === 'T-shirt') typeKey = 'T-shirt';
+            else if (p.type === 'phone-case') typeKey = 'phone-case';
+            else if (p.type === 'mug') typeKey = 'mug';
+            else if (p.type === 'pillow') typeKey = 'pillow'; // fallback
+            else if (p.type === 'plate') typeKey = 'plate'; // fallback
+            else if (p.type === 'cap') typeKey = 'cap'; // fallback
+            else if (p.type === 'mousepad') typeKey = 'mousepad'; // fallback
+            else if (p.type === 'water-bottle') typeKey = 'water-bottle'; // fallback
+            
+
+            else typeKey = p.type; // fallback
+
+            return `
+                <div class="product-card">
+                    <img src="${p.image}" alt="${p.name}">
+                    <div class="product-card-body">
+                        <h3 class="product-title">${p.name}</h3>
+                        <p class="product-description">${p.description}</p>
+                        <p class="product-price">$${p.price}</p>
+                        <button class="btn-primary customize-btn" data-type="${typeKey}">Customize</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        // ربط الأزرار
+        document.querySelectorAll('.customize-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const productType = btn.dataset.type;
+                window.location.href = `customize.html?product=${productType}`;
+            });
+        });
+            } catch (error) {
+                console.error('خطأ في تحميل المنتجات:', error);
+                const container = document.getElementById('all-products-list');
+                if (container) {
+                    container.innerHTML = '<p style="text-align:center; color: var(--text-secondary);">حدث خطأ في تحميل المنتجات.</p>';
+                }
+            }
+        }
+
+document.querySelectorAll('.customize-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const productType = btn.dataset.type;
+        window.location.href = `customize.html?product=${productType}`;
+    });
+});
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                loadAllProducts();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

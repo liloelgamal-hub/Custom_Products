@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "name": "T-shirt",
+    "type": "T-shirt",
+    "price": 19.99,
+    "image": "images/T-shirt.png",
+    "description": "Cotton t-shirt, perfect for custom design."
+  },
+  {
+    "id": 2,
+    "name": "Phone-Case",
+    "type": "phone-case",
+    "price": 14.99,
+    "image": "images/case.png",
+    "description": "Durable phone case with custom print."
+  },
+  {
+    "id": 3,
+    "name": "Pillow",
+    "type": "pillow",
+    "price": 9.99,
+    "image": "images/pillow.png",
+    "description": "Soft and comfortable pillow."
+  },
+  {
+    "id": 4,
+    "name": "plate",
+    "type": "plate",
+    "price": 39.99,
+    "image": "images/plate.png",
+    "description": "Durable plate for everyday use."
+  },
+  {
+    "id": 5,
+    "name": "Cap",
+    "type": "cap",
+    "price": 12.99,
+    "image": "images/cap.png",
+    "description": "Adjustable cotton cap with custom logo."
+  },
+  {
+    "id": 6,
+    "name": "Mousepad",
+    "type": "mousepad",
+    "price": 16.99,
+    "image": "images/mousepad.png",
+    "description": "Ergonomic mousepad with custom print."
+  },
+  {
+    "id": 7,
+    "name": "Water-bottle",
+    "type": "water-bottle ",
+    "price": 24.99,
+    "image": "images/water-bottle.png",
+    "description": "Stainless steel water bottle, 20oz."
+  },
+  {
+    "id": 8,
+    "name": "Mug",
+    "type": "mug",
+    "price": 18.99,
+    "image": "images/mug.png",
+    "description": "Ceramic mug, 11oz."
+  }
+]

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سلة التسوق - Custom Products</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- المسار الصحيح لملف CSS الخاص بك (بدون /public) -->
+    <link rel="stylesheet" href="/public/css/style.css">
+    <style>
+        .cart-item { display: flex; gap: 1rem; background: var(--card-bg); padding: 1rem; border-radius: 1rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap; }
+        .cart-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 0.5rem; }
+        .cart-item-details { flex: 1; }
+        .cart-item-title { font-weight: 600; margin-bottom: 0.5rem; }
+        .cart-item-price { color: var(--text-secondary); }
+        .cart-item-quantity { display: flex; gap: 0.5rem; align-items: center; }
+        .cart-item-quantity input { width: 60px; padding: 0.3rem; text-align: center; border: 1px solid var(--border-color); border-radius: 0.5rem; background: var(--bg-primary); }
+        .btn-danger { background: #ef4444; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 0.5rem; cursor: pointer; font-size: 1rem; }
+        .btn-danger:hover { background: #dc2626; }
+        .cart-total { text-align: right; font-size: 1.5rem; margin-top: 1rem; padding: 1rem; background: var(--card-bg); border-radius: 1rem; }
+        .checkout-btn { display: inline-block; margin-top: 1rem; background: var(--btn-primary); color: white; text-decoration: none; padding: 0.6rem 1.2rem; border-radius: 0.5rem; }
+        .empty-cart { text-align: center; padding: 2rem; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="container">
+            <h1 class="section-title" data-aos="fade-up">سلة التسوق</h1>
+            <div id="cart-items-container"></div>
+            <div id="cart-total" class="cart-total"></div>
+            <div style="text-align: right;">
+                <a href="checkout.html" class="checkout-btn">متابعة الدفع</a>
+            </div>
+        </div>
+    </div>
+<div style="text-align: left; margin-bottom: 1rem;">
+    <button id="remove-all-btn" class="btn-danger">Remove All</button>
+</div>
+    <footer class="footer">
+        <div class="container"><span>© 2025 Custom Products. جميع الحقوق محفوظة.</span></div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/public/js/translations.js"></script>
+    <script src="/public/js/main.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 100 });
+
+        function renderCart() {
+    const cart = getCart();
+    const container = document.getElementById('cart-items-container');
+    const totalSpan = document.getElementById('cart-total');
+    if (cart.length === 0) {
+        container.innerHTML = '<div class="empty-cart">Cart is empty</div>';
+        totalSpan.innerHTML = '';
+        return;
+    }
+    let total = 0;
+    container.innerHTML = cart.map((item, idx) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        const isCustom = item.type === 'custom-3d';
+        const editButton = isCustom ? `<button class="btn-edit" data-index="${idx}" aria-label="Edit">✏️</button>` : '';
+        return `
+            <div class="cart-item" data-index="${idx}">
+                <img src="${item.image}" alt="${item.name}">
+                <div class="cart-item-details">
+                    <div class="cart-item-title">${item.name}</div>
+                    <div class="cart-item-price">$${item.price}</div>
+                </div>
+                <div class="cart-item-quantity">
+                    <input type="number" data-index="${idx}" value="${item.quantity}" min="1">
+                    <button class="btn-danger" data-index="${idx}">🗑️</button>
+                    ${editButton}
+                </div>
+                <div><strong>$${itemTotal.toFixed(2)}</strong></div>
+            </div>
+        `;
+    }).join('');
+    totalSpan.innerHTML = `<strong>Total: $${total.toFixed(2)}</strong>`;
+
+    // ربط الأحداث
+    document.querySelectorAll('.cart-item-quantity input').forEach(inp => {
+        inp.addEventListener('change', (e) => {
+            const idx = parseInt(inp.dataset.index);
+            let qty = parseInt(inp.value);
+            if (isNaN(qty) || qty < 1) qty = 1;
+            updateQuantity(idx, qty);
+            renderCart();
+        });
+    });
+    document.querySelectorAll('.btn-danger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const idx = parseInt(btn.dataset.index);
+            removeItem(idx);
+            renderCart();
+        });
+    });
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const idx = btn.dataset.index;
+            window.location.href = `customize.html?edit=${idx}`;
+        });
+    });
+}
+
+
+document.getElementById('remove-all-btn').addEventListener('click', () => {
+    if (confirm('Are you sure you want to remove all items from your cart?')) {
+        localStorage.removeItem('cart');
+        renderCart();
+        updateCartCount();
+    }
+});
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCart();
+            updateCartCount(); // تحديث العدد في الناف
+        });
+    </script>
+</body>
+</html>
